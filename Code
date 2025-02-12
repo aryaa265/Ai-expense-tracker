@@ -1,0 +1,59 @@
+import spacy
+import re
+import pandas as pd
+from datetime import datetime
+
+# Load NLP model
+nlp = spacy.load("en_core_web_sm")
+
+# Sample expense categories
+CATEGORIES = {
+    "coffee": "Food & Beverage",
+    "starbucks": "Food & Beverage",
+    "uber": "Transport",
+    "bus": "Transport",
+    "amazon": "Shopping",
+    "rent": "Housing",
+    "gym": "Health & Fitness",
+}
+
+# Function to extract expense details
+def extract_expense(text):
+    doc = nlp(text.lower())
+    amount = None
+    category = "Uncategorized"
+    store = None
+
+    # Extract amount using regex
+    match = re.search(r"\$\d+(\.\d{1,2})?", text)
+    if match:
+        amount = float(match.group().replace("$", ""))
+
+    # Extract store and category
+    for token in doc:
+        word = token.text.lower()
+        if word in CATEGORIES:
+            category = CATEGORIES[word]
+            store = word.capitalize()
+
+    return {"date": datetime.now().strftime("%Y-%m-%d"), "amount": amount, "category": category, "store": store}
+
+# Sample test
+expenses = [
+    "Spent $15 on coffee at Starbucks",
+    "Paid $50 for Uber ride",
+    "Bought groceries from Walmart for $30",
+    "Paid $500 rent",
+]
+
+# Process expenses
+expense_data = [extract_expense(exp) for exp in expenses]
+
+# Convert to DataFrame
+df = pd.DataFrame(expense_data)
+
+# Save to CSV
+df.to_csv("expenses.csv", index=False)
+
+print("Expense Data:")
+print(df)

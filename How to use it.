@@ -1,0 +1,23 @@
+How to Use:
+
+1. Install dependencies:
+
+pip install spacy pandas
+python -m spacy download en_core_web_sm
+
+
+2. Run the script
+
+
+3. Check the generated expenses.csv file
+
+
+
+
+---
+
+Innovative Features:
+
+✅ Uses NLP to understand natural language expenses
+✅ Automatically categorizes spending
+✅ Stores data for financial tracking
